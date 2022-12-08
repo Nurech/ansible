@@ -1,0 +1,46 @@
+# apt-get install sshpass
+# ansible-playbook lab1.yml -i routers
+
+# ansible -i routers -m -a "show ip int brief"
+
+
+---
+- hosts: all
+  remote_user: cisco
+  gather_facts: no
+  tasks:
+
+    - name: Ping the router
+      raw: ping 192.168.56.102
+      register: ping_result
+    
+    - name: Print ping output
+      debug:
+        var: ping_result
+
+
+    - name: Retrieve IP addresses
+      raw: show ip interface brief
+      register: ip_addresses
+
+    - name: Print IP addresses
+      debug:
+        var: ip_addresses
+
+
+    - name: Retrieve ARP table
+      raw: show arp
+      register: arp_table
+
+    - name: Print ARP table
+      debug:
+        var: arp_table
+
+
+    - name: Retrieve routing table
+      raw: show ip route
+      register: routing_table
+
+    - name: Print routing table
+      debug:
+        var: routing_table

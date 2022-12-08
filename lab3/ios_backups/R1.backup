@@ -1,0 +1,76 @@
+Building configuration...
+Current configuration : 1598 bytes
+upgrade fpd auto
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+hostname R1
+boot-start-marker
+boot-end-marker
+logging message-counter syslog
+no aaa new-model
+ip source-route
+no ip icmp rate-limit unreachable
+ip cef
+no ip domain lookup
+ip domain name netsec.com
+no ipv6 cef
+multilink bundle-name authenticated
+username cisco password 7 030752180500701E1D5D4C53404A52
+archive
+ log config
+  hidekeys
+ip tcp synwait-time 5
+ip ssh version 2
+interface Loopback0
+ no ip address
+ ip access-group ABC in
+interface Ethernet0/0
+ no ip address
+ shutdown
+ duplex auto
+interface GigabitEthernet0/0
+ ip address 192.168.56.102 255.0.0.0
+ duplex full
+ speed 1000
+ media-type gbic
+ negotiation auto
+interface GigabitEthernet1/0
+ no ip address
+ shutdown
+ negotiation auto
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip access-list extended ABC
+ permit tcp host 192.168.44.144 host 192.168.56.102 eq 22
+ deny   ip any any
+logging trap notifications
+logging facility local0
+logging 2.2.2.2
+no cdp log mismatch duplex
+control-plane
+gatekeeper
+ shutdown
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ password 7 02050D4808095E731F1A5C4F524F4B
+ logging synchronous
+ login
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ password 7 0835495D1D
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+ntp server 1.1.1.1
+end

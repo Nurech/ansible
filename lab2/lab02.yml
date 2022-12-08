@@ -1,0 +1,44 @@
+# ansible-playbook lab02.yml -i inventory
+- hosts: all
+  remote_user: cisco
+  gather_facts: no
+
+  vars_files:
+    - ./group_vars/all.yml
+    - ./group_vars/R1.yml    
+
+  tasks:
+    - name: hostname
+      cisco.ios.ios_config:
+        lines: 
+          - hostname {{ hostname }}
+
+    - name: ntp
+      cisco.ios.ios_config:
+        lines: 
+          - ntp server {{ ntp_server }}
+
+    - name: syslog
+      cisco.ios.ios_config:
+        lines: 
+          - logging {{ syslog_server }}     
+          - logging trap 5     
+          - logging facility local0  
+        
+
+    - name: password protection
+      cisco.ios.ios_config:
+        lines: 
+          - service password-encryption    
+
+# print config 
+
+    - name: config
+      ios_command:
+        commands:
+          - show run | exclude !
+      register: result_config
+
+    - name: Print config
+      debug:
+        var: result_config

@@ -1,0 +1,42 @@
+# ansible-playbook lab03.yml -i inventory
+- hosts: all
+  remote_user: cisco
+  gather_facts: no
+  vars:
+      acl_vty:
+        - "permit tcp host {{ ansible_server }} host {{ ansible_host }} eq 22"
+        - "deny ip any any"   
+
+  vars_files:
+    - ./group_vars/all.yml
+    - ./group_vars/R1.yml    
+
+  tasks:
+    - name: make backup
+      ios_command:
+        commands:
+          - show run | exclude !
+      register: backup
+    - copy: content="{{ backup.stdout[0] | replace('\n\n','\n') }}" dest=./ios_backups/R1.backup 
+
+    - name: gather all legacy facts
+      cisco.ios.ios_facts:
+        gather_subset: all
+      register: facts
+    - copy: content="{{ facts }}" dest=./reports/all.info           
+    - copy: content="Hostname{{":"}} {{ facts.ansible_facts.ansible_net_hostname }}\nModel{{":"}} {{ facts.ansible_facts.ansible_net_model }}\nIOS type{{":"}} {{ facts.ansible_facts.ansible_net_iostype }}\nIOS version{{":"}} {{ facts.ansible_facts.ansible_net_version }}\nSerial number{{":"}} {{ facts.ansible_facts.ansible_net_serialnum }}" dest=./reports/R1.info           
+
+    - name: conf acl    
+      cisco.ios.ios_config: 
+        before: 
+          - no ip access-list extended ABC 
+        parents: 
+          - ip access-list extended ABC 
+        lines: "{{ acl_vty }}"
+        after: 
+          - interface Loopback0 
+          - ip access-group ABC in 
+        replace: block 
+        match: exact 
+      register: ios_changes 
+      when: "ansible_server in acl_vty[0]"
