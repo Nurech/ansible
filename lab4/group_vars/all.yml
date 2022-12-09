@@ -1,0 +1,32 @@
+interfaces:
+  lo1:
+    descr: lo1
+    ip: 4.4.4.4
+    net: 4.4.4.4
+    mask: 255.255.255.255
+    ospf_area: 1
+    wildcard: 0.0.0.0
+  lo2:
+    descr: lo2
+    ip: 5.5.5.5
+    net: 5.5.5.5
+    mask: 255.255.255.255
+    ospf_area: 1
+    wildcard: 0.0.0.0
+  lo3:
+    ip: 6.6.6.6
+    mask: 255.255.255.255
+  fa0/0:
+    fast: true
+    ip: 192.168.99.2
+    net: 192.168.99.0
+    mask: 255.255.255.0
+    ospf_area: 0
+    wildcard: 0.0.0.255
+  fa1/1:
+    fast: true
+    ip: 10.1.1.2
+    net: 10.1.1.0
+    mask: 255.255.255.0
+    ospf_area: 1
+    wildcard: 0.0.0.255

@@ -1,0 +1,6 @@
+router ospf 1
+{% for i in interfaces %}
+{% if 'ospf_area' in interfaces[i] %}
+ network {{ interfaces[i].net }} {{ interfaces[i].wildcard }} area {{ interfaces[i].ospf_area }}
+{% endif %}
+{% endfor %}

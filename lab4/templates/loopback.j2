@@ -1,0 +1,6 @@
+{% for i in interfaces %}
+{% if 'loopback' in interfaces[i] %}
+interface loopback {{interfaces[i].loopback}}
+ ip address {{ interfaces[i].ip }} 255.255.255.0
+{% endif %}
+{% endfor %}

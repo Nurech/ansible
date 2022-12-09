@@ -1,0 +1,49 @@
+# ansible-playbook lab04.yml -i inventory --vault-id the_secret@.vault_pass.txt
+---
+- hosts: all
+  remote_user: cisco
+  gather_facts: false
+  vars:
+    the_secret: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              37323566316439356131326633666532633066643633373838613664386634613565613738373132
+              6532343634643338386434366230623336653239643235610a663566366361623534313237323865
+              32643031323766653666653361363633306633316166396364616433386134363364373866393430
+              6362396230663237320a336533363264633638396438333936653832376239313864323337373932
+
+
+  tasks:
+    - name: Ospf configuration
+      cisco.ios.ios_config:
+        src: "./templates/ospf.j2"
+
+    - name: Loopbacks configuration
+      cisco.ios.ios_config:
+        src: "./templates/loopback.j2"
+
+    - name: Ospf auth configuration
+      cisco.ios.ios_config:
+        src: "./templates/ospf_auth.j2"
+
+    # print config (for personal use and debugging)
+    - name: config
+      ios_command:
+        commands:
+          - show run | exclude !
+      register: result_config
+
+    - name: Print config
+      debug:
+        var: result_config
+
+    # print osfp info
+    - name: config
+      ios_command:
+        commands:
+          - show ip ospf neighbor
+          - show ip route ospf
+      register: ospf_config
+
+    - name: Print ospf config
+      debug:
+        var: ospf_config.stdout_lines
