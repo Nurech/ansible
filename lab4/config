@@ -1,0 +1,39 @@
+conf t
+hostname R1
+ip domain-name netsec.com
+crypto key generate rsa
+ip ssh version 2
+username cisco password cisco123456789
+int Gi0/0
+ip add 192.168.56.102 255.0.0.0
+no shut
+int Gi1/0
+ip add 4.4.4.4 255.0.0.0
+no shut
+line vty 0 15
+transport input ssh
+login local
+line con 0
+password cisco123456789
+login
+end
+
+conf t
+hostname R2
+ip domain-name netsec.com
+crypto key generate rsa
+ip ssh version 2
+username cisco password cisco123456789
+int Gi0/0
+ip add 192.168.56.104 255.0.0.0
+no shut
+int Gi1/0
+ip add 4.4.4.5 255.0.0.0
+no shut
+line vty 0 15
+transport input ssh
+login local
+line con 0
+password cisco123456789
+login
+end
