@@ -1,11 +1,12 @@
-# ansible-playbook lab03.yml -i inventory
+# ansible-playbook lab03.yml
 - hosts: all
   remote_user: cisco
   gather_facts: no
   vars:
       acl_vty:
-        - "permit tcp host {{ ansible_server }} host {{ ansible_host }} eq 22"
-        - "deny ip any any"   
+        - " deny   ip any any"  
+        - " permit tcp host {{ ansible_server }} host {{ ansible_host }} eq 22"
+ 
 
   vars_files:
     - ./group_vars/all.yml
@@ -22,21 +23,24 @@
     - name: gather all legacy facts
       cisco.ios.ios_facts:
         gather_subset: all
-      register: facts
-    - copy: content="{{ facts }}" dest=./reports/all.info           
+      register: facts        
     - copy: content="Hostname{{":"}} {{ facts.ansible_facts.ansible_net_hostname }}\nModel{{":"}} {{ facts.ansible_facts.ansible_net_model }}\nIOS type{{":"}} {{ facts.ansible_facts.ansible_net_iostype }}\nIOS version{{":"}} {{ facts.ansible_facts.ansible_net_version }}\nSerial number{{":"}} {{ facts.ansible_facts.ansible_net_serialnum }}" dest=./reports/R1.info           
 
-    - name: conf acl    
+    - name: conf acl
       cisco.ios.ios_config: 
         before: 
-          - no ip access-list extended ABC 
+          - no ip access-list extended ABC
         parents: 
-          - ip access-list extended ABC 
+          - ip access-list extended ABC
         lines: "{{ acl_vty }}"
         after: 
-          - interface Loopback0 
-          - ip access-group ABC in 
-        replace: block 
-        match: exact 
-      register: ios_changes 
+          - interface Loopback0
+          - ip access-group ABC in
+        replace: block
+        match: line
+      register: ios_changes
       when: "ansible_server in acl_vty[0]"
+
+    - debug: 
+        msg: "Skipping ACL change because of possible ssh lock."
+      when: "ansible_server not in acl_vty[0]"

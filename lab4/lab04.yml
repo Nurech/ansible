@@ -1,16 +1,10 @@
-# ansible-playbook lab04.yml -i inventory --vault-id the_secret@.vault_pass.txt
+# ansible-playbook lab04.yml
 ---
 - hosts: all
   remote_user: cisco
   gather_facts: false
-  vars:
-    the_secret: !vault |
-              $ANSIBLE_VAULT;1.1;AES256
-              37323566316439356131326633666532633066643633373838613664386634613565613738373132
-              6532343634643338386434366230623336653239643235610a663566366361623534313237323865
-              32643031323766653666653361363633306633316166396364616433386134363364373866393430
-              6362396230663237320a336533363264633638396438333936653832376239313864323337373932
-
+  vars_files:
+    - ./group_vars/all.yml
 
   tasks:
     - name: Ospf configuration

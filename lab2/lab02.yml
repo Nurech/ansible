@@ -1,4 +1,4 @@
-# ansible-playbook lab02.yml -i inventory
+# ansible-playbook lab02.yml
 - hosts: all
   remote_user: cisco
   gather_facts: no
@@ -22,7 +22,7 @@
       cisco.ios.ios_config:
         lines: 
           - logging {{ syslog_server }}     
-          - logging trap 5     
+          - logging trap notifications
           - logging facility local0  
         
 
@@ -32,13 +32,13 @@
           - service password-encryption    
 
 # print config 
+#
+#    - name: config
+#      ios_command:
+#       commands:
+#          - show run | exclude !
+#      register: result_config
 
-    - name: config
-      ios_command:
-        commands:
-          - show run | exclude !
-      register: result_config
-
-    - name: Print config
-      debug:
-        var: result_config
+#    - name: Print config
+#      debug:
+#        var: result_config

@@ -19,16 +19,16 @@ interfaces:
     loopback: 3
     ip: 3.3.3.3
     mask: 255.255.255.255
-  Gi0/0:
+  GigabitEthernet0/0:
     ip: 192.168.56.104
     net: 192.168.56.0
     mask: 255.255.255.0
     ospf_area: 0
     wildcard: 0.0.0.255
-  Gi1/0:
+  GigabitEthernet1/0:
     auth: true
-    ip: 192.168.56.105
-    net: 192.168.56.0
+    ip: 4.4.4.5
+    net: 4.4.4.0
     mask: 255.255.255.0
     ospf_area: 1
     wildcard: 0.0.0.255
